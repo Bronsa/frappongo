@@ -55,8 +55,12 @@ module Frappongo
       ).as(:symbol) >> space?
     }
 
+    rule(:record_literal) {
+      (str('#') >> (simple_symbol >> (str('.') >> simple_symbol).repeat).as(:record) >> (vector | map)).as(:record_literal)
+    }
+
     rule(:literal) {
-      number | string | regexp | character | nihil | boolean | keyword
+      number | string | regexp | character | nihil | boolean | keyword | record_literal
     }
 
     rule(:string) {
@@ -158,7 +162,7 @@ module Frappongo
 
     rule(:map) {
       (str('{') >> space? >>
-        (atom.as(:key) >> space?  >> atom.as(:value)).as(:tuple).repeat.as(:elements) >>
+        (atom.as(:key) >> atom.as(:value)).as(:tuple).repeat.as(:elements) >>
         space? >> str('}')).as(:map) >> space?
     }
 
